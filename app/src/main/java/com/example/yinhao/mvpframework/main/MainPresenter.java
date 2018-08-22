@@ -4,8 +4,10 @@ import android.annotation.SuppressLint;
 
 import com.example.yinhao.mvpframework.ConstantValue;
 import com.example.yinhao.mvpframework.base.BaseResponse;
+import com.example.yinhao.mvpframework.bean.UserBean;
 import com.example.yinhao.mvpframework.bean.VersionBean;
 import com.example.yinhao.mvpframework.http.AppVersionService;
+import com.google.gson.GsonBuilder;
 
 import java.io.IOException;
 
@@ -42,7 +44,7 @@ public class MainPresenter implements MainContract.Presenter {
             public Response intercept(Interceptor.Chain chain) throws IOException {
                 Request original = chain.request();
                 Request request = original.newBuilder()
-//                        .addHeader("Authorization", token)
+                        .addHeader("Authorization", ConstantValue.TOKE)
                         .build();
 
                 return chain.proceed(request);
@@ -52,14 +54,14 @@ public class MainPresenter implements MainContract.Presenter {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(ConstantValue.BASE_URL)
                 .client(httpClient)
-                .addConverterFactory(GsonConverterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create(new GsonBuilder().create()))
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .build();
         AppVersionService service = retrofit.create(AppVersionService.class);
-        service.getTask(String.valueOf(0))
+        service.getUserInfo("imuser5")
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<BaseResponse<VersionBean>>() {
+                .subscribe(new Observer<BaseResponse<UserBean>>() {
                     @Override
                     public void onSubscribe(Disposable d) {
                         if (!d.isDisposed()) {
@@ -68,12 +70,12 @@ public class MainPresenter implements MainContract.Presenter {
                     }
 
                     @Override
-                    public void onNext(BaseResponse<VersionBean> versionBeanBaseResponse) {
+                    public void onNext(BaseResponse<UserBean> versionBeanBaseResponse) {
                         if (versionBeanBaseResponse != null) {
                             if (versionBeanBaseResponse.getCode() == 200) {
                                 if (versionBeanBaseResponse.getData() != null) {
-                                    String version = versionBeanBaseResponse.getData().getVersion();
-                                    mView.showToast(version);
+                                    String hxId = versionBeanBaseResponse.getData().getHxId();
+                                    mView.showToast(hxId);
                                 }
                             }
                         }

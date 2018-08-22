@@ -3,7 +3,7 @@ package com.example.yinhao.mvpframework.base;
 public class BaseResponse<T> {
     private int code;
     private String message;
-    private T data;
+    private T body;
 
     public int getCode() {
         return code;
@@ -22,10 +22,10 @@ public class BaseResponse<T> {
     }
 
     public T getData() {
-        return data;
+        return body;
     }
 
     public void setData(T data) {
-        this.data = data;
+        this.body = data;
     }
 }
