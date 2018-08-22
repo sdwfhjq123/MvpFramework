@@ -1,8 +1,7 @@
 package com.example.yinhao.mvpframework.base;
 
-public interface BaseView {
+public interface BaseView<T> {
 
-    void showError(String msg);
+    void setPresenter(T presenter);
 
-    void useNightMode(boolean isNight);
 }

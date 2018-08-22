@@ -1,9 +1,8 @@
 package com.example.yinhao.mvpframework.bean;
 
-import com.example.yinhao.mvpframework.base.BaseResponse;
 import com.google.gson.Gson;
 
-public class VersionBean extends BaseResponse<VersionBean> {
+public class VersionBean {
 
     /**
      * force : 1

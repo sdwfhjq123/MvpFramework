@@ -12,8 +12,7 @@ import com.example.yinhao.mvpframework.App;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
-public abstract class BaseActivity<T extends BasePresenter> extends AppCompatActivity implements BaseView {
-    protected T mPresenter;
+public abstract class BaseActivity extends AppCompatActivity {
     protected Activity mContext;
     private Unbinder mUnbinder;
 
@@ -25,10 +24,6 @@ public abstract class BaseActivity<T extends BasePresenter> extends AppCompatAct
         mUnbinder = ButterKnife.bind(this);
         mContext = this;
 
-        createPresenter();
-
-        if (mPresenter != null)
-            mPresenter.attachView(this);
         App.getInstance().addActivity(this);
 
         init();
@@ -48,33 +43,13 @@ public abstract class BaseActivity<T extends BasePresenter> extends AppCompatAct
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
-
-    }
-
-    @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (mPresenter != null)
-            mPresenter.detachView();
         mUnbinder.unbind();
         App.getInstance().removeActivity(this);
     }
 
-    @Override
-    public void showError(String msg) {
-
-    }
-
-    @Override
-    public void useNightMode(boolean isNight) {
-
-    }
-
     protected abstract int getLayout();
-
-    protected abstract void createPresenter();
 
     protected abstract void init();
 }
