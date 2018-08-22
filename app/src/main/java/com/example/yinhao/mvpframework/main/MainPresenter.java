@@ -1,7 +1,6 @@
 package com.example.yinhao.mvpframework.main;
 
 import android.annotation.SuppressLint;
-import android.widget.Toast;
 
 import com.example.yinhao.mvpframework.ConstantValue;
 import com.example.yinhao.mvpframework.base.BaseResponse;
@@ -10,7 +9,9 @@ import com.example.yinhao.mvpframework.http.AppVersionService;
 
 import java.io.IOException;
 
+import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.Interceptor;
@@ -55,28 +56,38 @@ public class MainPresenter implements MainContract.Presenter {
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .build();
         AppVersionService service = retrofit.create(AppVersionService.class);
-        service.getTask(0)
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .doOnNext(new Consumer<BaseResponse<VersionBean>>() {
-                    @Override
-                    public void accept(BaseResponse<VersionBean> versionBeanBaseResponse) throws Exception {
-                        mView.showProgressDialog();
-                    }
-                })
+        service.getTask(String.valueOf(0))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<BaseResponse<VersionBean>>() {
+                .subscribe(new Observer<BaseResponse<VersionBean>>() {
                     @Override
-                    public void accept(BaseResponse<VersionBean> versionBeanBaseResponse) {
-                        String version = versionBeanBaseResponse.getData().getVersion();
-                        mView.dismissProgressDialog();
-                        mView.showToast(version);
+                    public void onSubscribe(Disposable d) {
+                        if (!d.isDisposed()) {
+                            mView.showProgressDialog();
+                        }
                     }
-                }, new Consumer<Throwable>() {
+
                     @Override
-                    public void accept(Throwable throwable) throws Exception {
+                    public void onNext(BaseResponse<VersionBean> versionBeanBaseResponse) {
+                        if (versionBeanBaseResponse != null) {
+                            if (versionBeanBaseResponse.getCode() == 200) {
+                                if (versionBeanBaseResponse.getData() != null) {
+                                    String version = versionBeanBaseResponse.getData().getVersion();
+                                    mView.showToast(version);
+                                }
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
                         mView.dismissProgressDialog();
-                        mView.showToast(throwable.getMessage());
+                        mView.showToast(e.getMessage());
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        mView.dismissProgressDialog();
                     }
                 });
 

@@ -9,7 +9,6 @@ import android.widget.Toast;
 
 import com.example.yinhao.mvpframework.R;
 import com.example.yinhao.mvpframework.base.BaseActivity;
-import com.example.yinhao.mvpframework.bean.VersionBean;
 
 import butterknife.BindView;
 
