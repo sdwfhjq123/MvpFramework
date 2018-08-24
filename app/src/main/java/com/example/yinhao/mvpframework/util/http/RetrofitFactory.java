@@ -1,6 +1,6 @@
-package com.example.yinhao.mvpframework.util;
+package com.example.yinhao.mvpframework.util.http;
 
-import com.example.yinhao.mvpframework.ConstantValue;
+import com.example.yinhao.mvpframework.constant.ConstantValue;
 import com.example.yinhao.mvpframework.http.AppVersionService;
 
 import java.util.concurrent.TimeUnit;

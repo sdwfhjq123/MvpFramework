@@ -1,4 +1,4 @@
-package com.example.yinhao.mvpframework;
+package com.example.yinhao.mvpframework.constant;
 
 public class ConstantValue {
     public static final String BASE_URL = "http://mpapiprod.weichai.com:8090";

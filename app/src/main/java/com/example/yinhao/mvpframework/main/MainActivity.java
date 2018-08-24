@@ -1,7 +1,5 @@
 package com.example.yinhao.mvpframework.main;
 
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
@@ -9,6 +7,7 @@ import android.widget.Toast;
 
 import com.example.yinhao.mvpframework.R;
 import com.example.yinhao.mvpframework.base.BaseActivity;
+import com.example.yinhao.mvpframework.base.BasePresenter;
 
 import butterknife.BindView;
 
@@ -22,7 +21,6 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
     @BindView(R.id.progressBar)
     ProgressBar progressBar;
 
-
     @Override
     protected int getLayout() {
         return R.layout.activity_main;
@@ -32,19 +30,13 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
     protected void init() {
         mCheckButton.setOnClickListener(this);
 
-        new MainPresenter(this);
+        new MainPresenterImpl(this);
     }
+
 
     @Override
     public void onClick(View view) {
-        try {
-            PackageManager pm = getPackageManager();
-            PackageInfo pi = pm.getPackageInfo(getPackageName(), PackageManager.GET_ACTIVITIES);
-            String versionName = pi.versionName;
-            mPresenter.checkVersion(versionName);
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-        }
+        mPresenter.getHxId();
     }
 
     @Override
@@ -58,17 +50,27 @@ public class MainActivity extends BaseActivity implements MainContract.View, Vie
     }
 
     @Override
-    public void showProgressDialog() {
-        progressBar.setVisibility(View.VISIBLE);
+    public String getInfo() {
+        return "imuser5";
     }
 
     @Override
-    public void dismissProgressDialog() {
-        progressBar.setVisibility(View.GONE);
+    public void showLoading(boolean pullToRefresh) {
+
     }
 
     @Override
-    public void showToast(String msg) {
-        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+    public void showContent() {
+
+    }
+
+    @Override
+    public void showMessage(String msg, int type) {
+        Toast.makeText(this, msg, type).show();
+    }
+
+    @Override
+    public void showError(String message) {
+
     }
 }

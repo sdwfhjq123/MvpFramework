@@ -1,7 +1,14 @@
 package com.example.yinhao.mvpframework.base;
 
-public interface BaseView<T> {
+public interface BaseView<P extends BasePresenter> {
 
-    void setPresenter(T presenter);
+    void setPresenter(P presenter);
 
+    void showLoading(boolean pullToRefresh);
+
+    void showContent();
+
+    void showMessage(String msg, int type);
+
+    void showError(String message);
 }

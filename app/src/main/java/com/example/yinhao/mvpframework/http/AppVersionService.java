@@ -1,6 +1,6 @@
 package com.example.yinhao.mvpframework.http;
 
-import com.example.yinhao.mvpframework.ConstantValue;
+import com.example.yinhao.mvpframework.constant.ConstantValue;
 import com.example.yinhao.mvpframework.base.BaseResponse;
 import com.example.yinhao.mvpframework.bean.TokenBean;
 import com.example.yinhao.mvpframework.bean.UserBean;

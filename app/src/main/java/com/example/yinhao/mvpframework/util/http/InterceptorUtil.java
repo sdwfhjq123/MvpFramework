@@ -1,17 +1,14 @@
-package com.example.yinhao.mvpframework.util;
+package com.example.yinhao.mvpframework.util.http;
 
 import android.util.Log;
 
-import com.example.yinhao.mvpframework.ConstantValue;
+import com.example.yinhao.mvpframework.constant.ConstantValue;
 import com.example.yinhao.mvpframework.base.BaseResponse;
 import com.example.yinhao.mvpframework.bean.TokenBean;
-import com.example.yinhao.mvpframework.bean.UserBean;
 import com.example.yinhao.mvpframework.http.AppVersionService;
 
 import java.io.IOException;
 
-import io.reactivex.Observable;
-import okhttp3.Call;
 import okhttp3.Interceptor;
 import okhttp3.Request;
 import okhttp3.Response;

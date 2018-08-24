@@ -1,93 +1,83 @@
 package com.example.yinhao.mvpframework.main;
 
 import android.annotation.SuppressLint;
+import android.widget.Toast;
 
-import com.example.yinhao.mvpframework.ConstantValue;
+import com.example.yinhao.mvpframework.constant.ConstantValue;
 import com.example.yinhao.mvpframework.base.BaseResponse;
 import com.example.yinhao.mvpframework.bean.UserBean;
-import com.example.yinhao.mvpframework.bean.VersionBean;
 import com.example.yinhao.mvpframework.http.AppVersionService;
-import com.example.yinhao.mvpframework.util.RetrofitFactory;
-import com.google.gson.GsonBuilder;
+import com.example.yinhao.mvpframework.inter.Callback;
+import com.example.yinhao.mvpframework.util.http.RetrofitFactory;
 
 import java.io.IOException;
 
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
-import retrofit2.Retrofit;
-import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 import static android.support.v4.util.Preconditions.checkNotNull;
 
-public class MainPresenter implements MainContract.Presenter {
+public class MainPresenterImpl implements MainContract.Presenter {
     private MainContract.View mView;
+    private CompositeDisposable mCompositeDisposable;
 
     @SuppressLint("RestrictedApi")
-    public MainPresenter(MainContract.View view) {
+    public MainPresenterImpl(MainContract.View view) {
         mView = checkNotNull(view);
         mView.setPresenter(this);
+        mCompositeDisposable = new CompositeDisposable();
     }
 
     @SuppressLint("CheckResult")
     @Override
-    public void checkVersion(String currentVersion) {
-        OkHttpClient.Builder client = new OkHttpClient.Builder();
-        client.addInterceptor(new Interceptor() {
-            @Override
-            public Response intercept(Interceptor.Chain chain) throws IOException {
-                Request original = chain.request();
-                Request request = original.newBuilder()
-                        .addHeader("Authorization", ConstantValue.TOKE)
-                        .build();
-
-                return chain.proceed(request);
-            }
-        });
+    public void getHxId() {
         AppVersionService service = RetrofitFactory.getInstence().API();
-        service.getUserInfo("imuser5")
+        service.getUserInfo(mView.getInfo())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<BaseResponse<UserBean>>() {
                     @Override
                     public void onSubscribe(Disposable d) {
                         if (!d.isDisposed()) {
-                            mView.showProgressDialog();
+                            mView.showLoading(true);
                         }
                     }
 
                     @Override
                     public void onNext(BaseResponse<UserBean> versionBeanBaseResponse) {
                         if (versionBeanBaseResponse.getCode() == 200) {
-                            String hxId = versionBeanBaseResponse.getData().getHxId();
-                            mView.showToast(hxId);
+                            mView.showMessage(versionBeanBaseResponse.getData().getHxId(), 0);
+                        } else {
                         }
                     }
 
                     @Override
                     public void onError(Throwable e) {
-                        mView.dismissProgressDialog();
-                        mView.showToast(e.getMessage());
+                        mView.showLoading(false);
                     }
 
                     @Override
                     public void onComplete() {
-                        mView.dismissProgressDialog();
+                        mView.showLoading(true);
                     }
                 });
-
     }
-
 
     @Override
-    public void start() {
+    public void subscribe() {
 
     }
+
+    @Override
+    public void unSubscribe() {
+
+    }
+
 }
