@@ -31,6 +31,7 @@ dependencies {
     //retrofit2
     api 'com.squareup.retrofit2:converter-gson:2.4.0'
     api 'com.squareup.retrofit2:adapter-rxjava2:2.4.0'
+    api 'com.squareup.okhttp3:logging-interceptor:3.10.0'
 
     // 衔接 Retrofit & RxJava
     // 此处一定要注意使用RxJava2的版本

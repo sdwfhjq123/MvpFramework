@@ -7,6 +7,7 @@ import com.example.yinhao.mvpframework.base.BaseResponse;
 import com.example.yinhao.mvpframework.bean.UserBean;
 import com.example.yinhao.mvpframework.bean.VersionBean;
 import com.example.yinhao.mvpframework.http.AppVersionService;
+import com.example.yinhao.mvpframework.util.RetrofitFactory;
 import com.google.gson.GsonBuilder;
 
 import java.io.IOException;
@@ -50,14 +51,7 @@ public class MainPresenter implements MainContract.Presenter {
                 return chain.proceed(request);
             }
         });
-        OkHttpClient httpClient = client.build();
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(ConstantValue.BASE_URL)
-                .client(httpClient)
-                .addConverterFactory(GsonConverterFactory.create(new GsonBuilder().create()))
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                .build();
-        AppVersionService service = retrofit.create(AppVersionService.class);
+        AppVersionService service = RetrofitFactory.getInstence().API();
         service.getUserInfo("imuser5")
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -71,13 +65,9 @@ public class MainPresenter implements MainContract.Presenter {
 
                     @Override
                     public void onNext(BaseResponse<UserBean> versionBeanBaseResponse) {
-                        if (versionBeanBaseResponse != null) {
-                            if (versionBeanBaseResponse.getCode() == 200) {
-                                if (versionBeanBaseResponse.getData() != null) {
-                                    String hxId = versionBeanBaseResponse.getData().getHxId();
-                                    mView.showToast(hxId);
-                                }
-                            }
+                        if (versionBeanBaseResponse.getCode() == 200) {
+                            String hxId = versionBeanBaseResponse.getData().getHxId();
+                            mView.showToast(hxId);
                         }
                     }
 
@@ -94,6 +84,7 @@ public class MainPresenter implements MainContract.Presenter {
                 });
 
     }
+
 
     @Override
     public void start() {
